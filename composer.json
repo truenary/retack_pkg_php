@@ -1,0 +1,23 @@
+{
+  "name": "retack/retack-sdk",
+  "version": "1.0.0",
+  "description": "Retack SDK for PHP",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Truenary",
+      "email": "contact@truenary.com"
+    }
+  ],
+  "homepage": "https://github.com/truenary/retack_pkg_php",
+  "autoload": {
+    "psr-4": {
+      "Retack\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^8.2",
+    "ext-curl": "*"
+  }
+}
