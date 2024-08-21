@@ -7,8 +7,8 @@ use Exception;
 class RetackSDK {
     private $retackConfig;
 
-    public function __construct(string $apiKey) {
-        $this->retackConfig = new RetackConfig($apiKey);
+    public function __construct(string $envKey) {
+        $this->retackConfig = new RetackConfig($envKey);
     }
 
     public function reportErrorAsync(string $error, ?\Throwable $stackTrace = null, ?array $userContextExtras = null): bool {
@@ -20,7 +20,7 @@ class RetackSDK {
 
         $headers = [
             "Content-Type: application/json",
-            "ENV-KEY: " . $this->retackConfig->getApiKey()
+            "ENV-KEY: " . $this->retackConfig->getEnvKey()
         ];
 
         $body = json_encode([
@@ -51,14 +51,14 @@ class RetackSDK {
 }
 
 class RetackConfig {
-    private $apiKey;
+    private $envKey;
 
-    public function __construct(string $apiKey) {
-        $this->apiKey = $apiKey;
+    public function __construct(string $envKey) {
+        $this->envKey = $envKey;
     }
 
-    public function getApiKey(): string {
-        return $this->apiKey;
+    public function getEnvKey(): string {
+        return $this->envKey;
     }
 }
 
@@ -81,7 +81,7 @@ class ErrorReportRequest {
 
     public function __construct(string $error, ?\Throwable $stackTrace, ?UserContext $userContext = null) {
         $this->error = $error;
-        $this->stackTrace = $stackTrace ? $this->formatStackTrace($stackTrace) : null;
+        $this->stackTrace = $stackTrace;
         $this->userContext = $userContext;
     }
 
@@ -97,30 +97,4 @@ class ErrorReportRequest {
         return $this->userContext;
     }
 
-    private function formatStackTrace(\Throwable $stackTrace): string {
-        $stackTraceDetails = [];
-
-        do {
-            $frameInfo = [
-                'filename' => $stackTrace->getFile(),
-                'lineno' => $stackTrace->getLine(),
-                'function' => $stackTrace->getTrace()[0]['function'] ?? '',
-                'line' => $stackTrace->getLine(),
-                'code_context' => $stackTrace->getMessage(),
-                'module_name' => $stackTrace->getFile()
-            ];
-            $stackTraceDetails[] = $frameInfo;
-            $stackTrace = $stackTrace->getPrevious();
-        } while ($stackTrace);
-
-        return implode(
-            "\n",
-            array_map(
-                function ($frame) {
-                    return "File '" . $frame['filename'] . "', line " . $frame['lineno'] . ", in " . $frame['function'] . ", at line " . $frame['line'] . "\n" . $frame['code_context'] . "\nModule: " . $frame['module_name'];
-                },
-                $stackTraceDetails
-            )
-        );
-    }
 }

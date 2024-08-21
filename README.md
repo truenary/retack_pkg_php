@@ -4,7 +4,7 @@ RetackSDK is a PHP library for integrating with Retack AI's error reporting serv
 
 ## Installation
 
-You can install the RetackSDK via Composer (assuming it's published on Packagist):
+You can install the RetackSDK via Composer:
 
 ```bash
 composer require retack/retack-sdk
